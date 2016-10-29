@@ -1,0 +1,61 @@
+Tokens
+
+IDentificado
+comeca com @ ou letra
+
+seguIDo de letra
+nao possui _ ou @ seguIDos
+
+nao pode terminar com @ ou _
+
+
+ID : (@{L} | {L}) ({L} | @{L} | _{L})+
+
+PROGRAMA : "programa"
+DECL : "decl"
+INCIO : "incio"
+FIM : "fim"
+CARACTER : "caracter"
+CADEIA : "cadeia"
+INTEIRO : "inteiro"
+BOOLEANO : "booleano"
+REAL : "real"
+DE : "de"
+VETOR : "vetor"
+PROCEDIMENTO : "procedimento"
+FUNCAO : "funcao"
+SE : "se"
+ENTAO : "entao"
+SENAO : "senao"
+FACA : "faca"
+REPITA : "repita"
+ATE : "ate"
+LEIA : "leia"
+ESCREVA : "escreva"
+OU : "ou"
+E : "e"
+NAO : "nao"
+FALSO : "falso"
+VERDADEIRO : "verdadeiro"
+ENQUANTO : "enquanto"
+
+SEMICOLON : ";"
+COMMA : ","
+DOT : "."
+GREATERTHAN : ">"
+LESSTHAN : "<"
+EQUAL : "="
+OPENPAREN : "("
+CLOSEPAREN : ")"
+OPENBRACKET : "["
+CLOSEBRACKET : "]"
+PLUS : "+"
+MINUS : "-"
+MULT : "*"
+DIV : "/"
+COLON : ":"
+ASSIGNMENT : ":="
+DDOT : ".."
+NOT : "<>"
+EQUALSORLESSTHAN : "<="
+EQUALOSRGREATERTHAN : ">="
