@@ -1,10 +1,8 @@
 package gui.menubar.menus;
 
-import compiler.LexicalError;
-import compiler.Lexico;
-import compiler.Token;
 import gui.Frame;
 
+import compilerSintaticLexic.*;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;

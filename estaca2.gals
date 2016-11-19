@@ -1,0 +1,175 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+Package = compiler
+ScannerCaseSensitive = true
+ScannerTable = Compact
+Input = Stream
+Parser = LL
+#RegularDefinitions
+L  : ([A-Z] | [a-z])
+D  : [0-9]
+DP : [1-9]
+NUMPOS: {DP}{D}+
+WS : [\ \t\n\r]
+INT: (0 | {DP}{D}*)
+
+E : (e | E)
+EXP : {E}(\+ | \-)?{INT}
+EXPPOS : {E}(\+)?{INT}
+EXPNEG : {E}(\-){INT}
+REALSEMEXP : (\.{D}+ | {D}\.{D}+ | {NUMPOS}+\.{D}+)
+REALCOMEXP : ({REALSEMEXP}{EXP} | {REALSEMEXP}\.{EXP} | {INT}\.{EXP})
+#Tokens
+
+// const numericas
+num_int : ({INT} | {INT}{EXPPOS})
+num_real: ({REALSEMEXP} | {REALCOMEXP} | {INT}{EXPNEG})
+
+se : se
+entao : entao
+senao : senao
+faca : faca
+leia : leia
+escreva : escreva
+ou : ou
+e : e
+nao : nao
+falso : falso
+verdadeiro : verdadeiro
+enquanto : enquanto
+ref: ref
+programa: programa
+div: div
+cadeia : cadeia
+inteiro : inteiro
+real : real
+booleano : booleano
+caracter : caracter
+num_int: num_int
+num_real: num_real
+literal : literal
+
+// identificadores
+id : (@{L} | @{D} | {L}) ({D} | {L} | @{L} | _{L})*
+
+";" : ";"
+"," : ","
+".": "."
+">" : ">"
+"<" : "<"
+"=" : "="
+"(" : "("
+")" : ")"
+"[" : "["
+"]" : "]"
+"{" : "{"
+"}" : "}"
+"+" : "+"
+"-" : "-"
+"*" : "*"
+"/" : "/"
+::= : ::=
+":=" : ":="
+"<>" : "<>"
+"<=" : "<="
+">=" : ">="
+
+ : {WS}*
+#NonTerminals
+<programa>
+<bloco>
+<comando>
+<constante>
+<constante_explicita>
+<dcl_var_const>
+<expressao>
+<expsimp>
+<fator>
+<lid>
+<op_add>
+<op_mult>
+<oprel>
+<rcomid>
+<rep_expsimp>
+<rep_termo>
+<resto_expressao>
+<rvar>
+<senaoparte>
+<termo>
+<tipo>
+<tipo_pre_def>
+<variavel>
+<com_composto>
+<dimensao>
+<fator_const>
+<rep_lid>
+<replistacomando>
+<rep_lexpr>
+#Grammar
+
+<programa> ::= programa id #101 ";" <bloco> "." ;
+
+<bloco> ::= <dcl_var_const> <com_composto> ;
+
+<dcl_var_const> ::= <tipo> <dimensao> #102 <lid> <fator_const> #103";" 				  <dcl_var_const> | î ;
+
+<tipo> ::= inteiro #104 | real #105 | booleano #106 | caracter #107 | cadeia "[" 		<constante> #108 "]"; 
+
+<dimensao> ::= #109 "[" <constante> #110"]" | #111 î ;
+
+<lid> ::= id #112 <rep_lid> ; <rep_lid> ::= "," <lid> | î ;
+
+<fator_const> ::= "=" <constante> #113 | #114 î ;
+
+
+<com_composto> ::= "{" <comando> <replistacomando> "}" ; 
+
+<replistacomando> ::= ";" <comando> <replistacomando> | î ;
+
+<comando> ::= id #115 <rcomid> | <com_composto> | se <expressao> #116 
+		  entao <comando> senao <comando>  | enquanto <expressao> #116 faca 			  <comando>  | leia "(" #117 <lid> ")" |  escreva "(" <expressao> 		  #118 <rep_lexpr> ")" | î ; 
+
+
+<rcomid>::= #119 ":=" <expressao> #120 
+		|"[" #121 <expressao> #122 "]" ":=" <expressao> #120 
+		| î ;
+
+
+<rep_lexpr> ::= "," <expressao> #127 <rep_lexpr> | î ;
+
+
+<expressao> ::= <expsimp> #128 <resto_expressao> ; <resto_expressao> ::= <oprel> 		    <expsimp> #129 | î ; 
+
+
+<oprel> ::= "=" #130 | "<" #131 | ">" #132 | ">=" #133 | "<=" #134 | "<>" #134 ; 
+
+
+<expsimp> ::= <termo> #135 <rep_expsimp> ; <rep_expsimp> ::= <op_add> #136 			  <termo> #137 <rep_expsimp> | î; 
+
+<op_add> ::= "+" #138 | "-" #139 | ou #140;
+
+
+<termo> ::= <fator> #141 <rep_termo> ; <rep_termo> ::= <op_mult> #142 <fator> 		#143 <rep_termo> | î ; 
+
+
+<op_mult> ::= "*" #144 | "/" #145 | div #146 | e #147 ; 
+
+<fator> ::= nao #148 <fator> #149 
+		| "-" #150 <fator> #151
+		| "(" #152 <expressao> ")" #153 
+		|  id #115 <rvar> #154 
+		| <constante_explicita> #155;
+
+<rvar> ::= "[" #121 <expressao> #156 "]" |î #157 ;
+
+<constante> ::= id  #158 | <constante_explicita> ; 
+
+<constante_explicita>::= num_int #159 | num_real #160 
+				| falso #161 | verdadeiro #162 | literal #163;
+
+

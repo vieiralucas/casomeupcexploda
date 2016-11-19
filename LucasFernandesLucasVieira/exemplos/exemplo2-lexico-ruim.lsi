@@ -1,0 +1,10 @@
+const inteiro @incremento@_desejado = 2;
+const inteiro @maximo eh 20;
+decl @alvo : inteiro;
+
+inicio
+    @alvo = 0ee;
+    enquanto @alvo < @maximo faca
+        @alvo += @incremento;
+    escreva(@alvo);
+fim.

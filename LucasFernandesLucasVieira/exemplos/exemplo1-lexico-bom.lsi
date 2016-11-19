@@ -1,0 +1,10 @@
+decl @valor;
+
+inicio
+    @valor = 20
+    se @valor * 10 > 100 entao
+        enquanto @valor < 100
+            @valor = @valor + @valor
+    senao
+        escreva @valor * 10;
+fim.

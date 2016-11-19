@@ -1,9 +1,9 @@
 package gui.menubar;
 
-import compiler.Sintatico;
 import gui.Frame;
 import gui.menubar.menus.Arquivo;
 import gui.menubar.menus.LexicoMenu;
+import gui.menubar.menus.SemanticoMenu;
 import gui.menubar.menus.SintaticoMenu;
 
 import javax.swing.*;
@@ -29,7 +29,7 @@ public class MenuBar extends JMenuBar {
         sintatico = new SintaticoMenu(frame);
         this.add(sintatico);
 
-        semantico = new JMenu();
+        semantico = new SemanticoMenu(frame);
         semantico.setText("Semântico");
         this.add(semantico);
 

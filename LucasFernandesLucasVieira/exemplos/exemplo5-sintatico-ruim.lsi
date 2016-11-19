@@ -1,0 +1,8 @@
+decl @numGrande : real = 2e20;
+decl @numPeq : real = 2E-10;
+
+inicio:
+    enquanto @numPeq < @numGrande
+        @numPeq = @numPeq * 10;
+    escreva(@numPeq);
+fim

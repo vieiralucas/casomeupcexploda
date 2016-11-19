@@ -1,6 +1,6 @@
 package gui.menubar.menus;
 
-import compiler.*;
+import compilerSintaticLexic.*;
 import gui.Frame;
 
 import javax.swing.*;

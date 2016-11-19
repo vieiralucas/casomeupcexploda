@@ -1,0 +1,16 @@
+const @numA: real;
+const @numB: real;
+
+proc subtraiNaoNegativo;
+    decl @resultadoUm : real;
+    decl @resultadoDois : real;
+    inicio
+        @resultadoUm := @numA - @numB;
+        @resultadoDois := @numB - numA;
+        se @resultadoUm >= 0 entao escreva @resultadoUm senao escreva @resultadoDois
+    fim;
+
+inicio
+@numA := 1;
+@numB := 2;
+fim.
