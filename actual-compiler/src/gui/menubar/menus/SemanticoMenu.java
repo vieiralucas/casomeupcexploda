@@ -68,20 +68,29 @@ public class SemanticoMenu extends JMenu {
 
                         syntaticError.printStackTrace();
                     } catch (LexicalError lexicalError) {
+                        int pos = lexicalError.getPosition();
+                        String msg = "Um erro léxico foi identificado:\n";
+
+                        msg += lexicalError.getMessage() + "\n";
+                        msg += "Posição: " + pos;
+
+                        JOptionPane.showMessageDialog(frame, msg);
+                        frame.setCursorPosition(pos);
+
                         lexicalError.printStackTrace();
-                        showSuccess();
                     } catch (SemanticError semanticError) {
                         dialog.dispose();
 
                         JOptionPane.showMessageDialog(frame, semanticError.getMessage());
                         frame.setCursorPosition(semanticError.getPosition());
+
                         semanticError.printStackTrace();
                     }
                 }
 
                 private void showSuccess() {
                     dialog.dispose();
-                    JOptionPane.showMessageDialog(frame, "Seu código esta sintaticamente correto.");
+                    JOptionPane.showMessageDialog(frame, "Seu código esta semanticamente correto.");
                 }
             }).start();
 

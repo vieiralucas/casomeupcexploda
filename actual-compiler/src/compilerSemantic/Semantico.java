@@ -52,6 +52,7 @@ public class Semantico implements Constants {
                 break;
             case 158:
                 id = getIdByLexema(token.getLexeme());
+
                 if (id == null) {
                     throw new SemanticError("Id não declarado", pos);
                 } else {
@@ -125,17 +126,17 @@ public class Semantico implements Constants {
                 break;
             case 112:
                 id = tabelaSimbolos.get(token.getLexeme() + nivelAtual);
-                idLid = id;
                 if (contextoLid.equals("decl")) {
                     if (id != null) {
                         throw new SemanticError("Id já declarado", pos);
                     } else {
                         id = new Id(categoriaAtual, subCategoria, tipoAtual, null);
+                        idLid = id;
                         tabelaSimbolos.put(token.getLexeme() + nivelAtual, id);
                     }
                 } else if (contextoLid.equals("leitura")) {
                     if (id == null) {
-                        throw new SemanticError("Id não delcarado", pos);
+                        throw new SemanticError("Id não declarado", pos);
                     } else if (!categoriaAtual.equals("id-programa") || !isTipoAtualValid()) {
                         // TODO endenter oq significa categoria ou tipo invalido
                         throw new SemanticError("Tipo inválido para leitura", pos);
@@ -147,7 +148,7 @@ public class Semantico implements Constants {
             case 113:
                 if (subCategoria.equals("cadeia") || subCategoria.equals("vetor")) {
                     throw new SemanticError("Apenas ids de tipo pré-definido podem ser declarados como \t\tconstante", pos);
-                } else if (tipoConstante.equals(tipoAtual)) {
+                } else if (!tipoConstante.equals(tipoAtual)) {
                     throw new SemanticError("Tipo da constante incorreto", pos);
                 } else {
                     categoriaAtual = "constante";
@@ -157,6 +158,7 @@ public class Semantico implements Constants {
                 categoriaAtual = "variavel";
                 break;
             case 103:
+                idLid.setValor(token.getLexeme());
                 idLid.categoria = categoriaAtual;
                 idLid.subCategoria = subCategoria;
                 break;
@@ -169,11 +171,11 @@ public class Semantico implements Constants {
                 }
                 break;
             case 119:
-                if (id.categoria.equals("variavel") || id.categoria.equals("parametro")) {
-                    if (id.tipo.equals("vetor")) {
+                if (idLid.categoria != null && (idLid.categoria.equals("variavel") || idLid.categoria.equals("parametro"))) {
+                    if (idLid.tipo.equals("vetor")) {
                         throw new SemanticError("id deveria ser indexado", pos);
                     } else {
-                        tipoLadoEsquerdo = id.tipo;
+                        tipoLadoEsquerdo = idLid.tipo;
                     }
                 } else {
                     throw new SemanticError("id deveria ser variável", pos);
