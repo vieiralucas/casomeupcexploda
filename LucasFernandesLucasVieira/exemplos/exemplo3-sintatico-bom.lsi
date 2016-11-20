@@ -1,0 +1,13 @@
+decl @valor : inteiro;
+decl @divisor : inteiro;
+
+inicio
+    @valor := 20;
+    @divisor := 3;
+    enquanto @valor >= 0 faca
+        @valor := @valor - @divisor;
+    se @valor > 0 entao
+        escreva(verdadeiro)
+    senao
+        escreva(falso);
+fim.

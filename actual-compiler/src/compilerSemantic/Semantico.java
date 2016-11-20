@@ -18,13 +18,22 @@ public class Semantico implements Constants {
     String tipoLadoEsquerdo = "";
     boolean opNega = false;
     boolean opUnario = false;
+    String tipoVarIndexada = "";
+    String tipoFator = "";
+    String tipoExpressao = "";
+    String tipoVar = "";
+    String tipoElementosDoVetor = "";
+    String tipoTermo = "";
+    String operadorAtual = "";
+    String tipoExpressaoSimples = "";
+    String contextoEXPR = "";
 
 
     public void executeAction(int action, Token token) throws SemanticError {
         int pos = token.getPosition();
         Id id = null;
 
-        switch (token.getId()) {
+        switch (action) {
             case 101:
                 id = new Id("id-programa", categoriaAtual, "programa", null);
                 tabelaSimbolos.put(token.getLexeme() + nivelAtual, id);
@@ -37,6 +46,9 @@ public class Semantico implements Constants {
                 break;
             case 106:
                 tipoAtual = "booleano";
+                break;
+            case 107:
+                tipoAtual = "caracter";
                 break;
             case 158:
                 id = getIdByLexema(token.getLexeme());
@@ -174,6 +186,11 @@ public class Semantico implements Constants {
                     opNega = true;
                 }
                 break;
+            case 149:
+                if (!tipoFator.equals("boleano")) {
+                    throw new SemanticError("Op. “não” exige operando booleano", pos);
+                }
+                break;
             case 150:
                 if (opUnario) {
                     throw new SemanticError("Op. “unário” repetido", pos);
@@ -181,16 +198,239 @@ public class Semantico implements Constants {
                     opUnario = true;
                 }
                 break;
+            case 151:
+                if (!isNumber(tipoFator)) {
+                    throw new SemanticError("Op. unário exige operando numérico", pos);
+                }
+                break;
             case 152:
                 opNega = opUnario = false;
                 break;
+            case 153:
+                tipoFator = tipoExpressao;
+                break;
             case 121:
-                if (idAtual.categoria.equals("variavel")) {
+                if (!idAtual.categoria.equals("variavel")) {
+                    throw new SemanticError("esperava-se uma variável", pos);
+                } else {
+                    if (!idAtual.tipo.equals("vetor") && !idAtual.tipo.equals("cadeia")) {
+                        throw new SemanticError("apenas vetores e cadeias podem ser indexados", pos);
+                    } else {
+                        tipoVarIndexada = idAtual.tipo;
+                    }
+                }
+                break;
+            case 156:
+                if (!tipoExpressao.equals("inteiro")) {
+                    throw new SemanticError("índice deveria ser inteiro", pos);
+                } else {
+                    if (tipoVarIndexada.equals("cadeia")) {
+                        tipoVar = "caracter";
+                    } else {
+                        tipoVar = tipoElementosDoVetor;
+                    }
+                }
+                break;
+            case 157:
+                if (idAtual.categoria.equals("variavel") || idAtual.categoria.equals("parametro")) {
+                    if (idAtual.tipo.equals("vetor")) {
+                        throw new SemanticError("vetor deve ser indexado", pos);
+                    } else {
+                        tipoVar = idAtual.tipo;
+                    }
+                } else {
+                    if (idAtual.categoria.equals("constante")) {
+                        tipoVar = tipoConstante;
+                    } else {
+                        throw new SemanticError("esperava-se variável ou constante", pos);
+                    }
+                }
+                break;
+            case 154:
+                tipoFator = tipoVar;
+                break;
+            case 155:
+                tipoFator = tipoConstante;
+                break;
+            case 141:
+                tipoTermo = tipoFator;
+                break;
+            case 144:
+                operadorAtual = "*";
+                break;
+            case 145:
+                operadorAtual = "/";
+                break;
+            case 146:
+                operadorAtual = "div";
+                break;
+            case 147:
+                operadorAtual = "e";
+                break;
+            case 142:
+                if (isNumber(tipoTermo)) {
+                    if (!"*+-/div".contains(operadorAtual)) {
+                        throw new SemanticError("Operador e Operando incompatíveis", pos);
+                    }
+                } else if (tipoTermo.equals("boleano")) {
+                    if (!"oue".contains(operadorAtual)) {
+                        throw new SemanticError("Operador e Operando incompatíveis", pos);
+                    }
+                } else if ("caractercadeia".contains(tipoTermo)) {
+                    if (!"+".equals(operadorAtual)) {
+                        throw new SemanticError("Operador e Operando incompatíveis", pos);
+                    }
+                }
+                break;
+            case 143:
+                if ((isNumber(tipoTermo) && !isNumber(tipoFator)) || (isNumber(tipoFator) && !isNumber(tipoTermo))) {
+                    throw new SemanticError("Operandos incompatíveis", pos);
+                } else if (("boleano".equals(tipoTermo) && !"boleano".equals(tipoFator)) || (!"boleano".equals(tipoTermo) && "boleano".equals(tipoFator))) {
+                    throw new SemanticError("Operandos incompatíveis", pos);
+                } else if (("cadeiacaracter".equals(tipoTermo) && !"cadeiacaracter".equals(tipoFator)) || (!"cadeiacaracter".equals(tipoTermo) && "cadeiacaracter".equals(tipoFator))) {
+                    throw new SemanticError("Operandos incompatíveis", pos);
+                } else {
+                    if (isNumber(tipoTermo) && isNumber(tipoFator)) {
+                        if ((tipoTermo + tipoFator).contains("real")) {
+                            tipoTermo = "real";
+                        } else {
+                            tipoTermo = "inteiro";
+                        }
+                    } else if ("cadeiacaracter".equals(tipoTermo) || "cadeiacaracter".equals(tipoFator)) {
+                        tipoTermo = "cadeia";
+                    }
+                }
+                break;
+            case 135:
+                tipoExpressaoSimples = tipoTermo;
+                break;
+            case 138:
+                operadorAtual = "+";
+                break;
+            case 139:
+                operadorAtual = "-";
+                break;
+            case 140:
+                operadorAtual = "ou";
+                break;
+            case 136:
+                if (isNumber(tipoExpressaoSimples)) {
+                    if (!"*+-/div".contains(operadorAtual)) {
+                        throw new SemanticError("Operador e Operando incompatíveis", pos);
+                    }
+                } else if (tipoExpressaoSimples.equals("boleano")) {
+                    if (!"oue".contains(operadorAtual)) {
+                        throw new SemanticError("Operador e Operando incompatíveis", pos);
+                    }
+                } else if ("caractercadeia".contains(tipoExpressaoSimples)) {
+                    if (!"+".equals(operadorAtual)) {
+                        throw new SemanticError("Operador e Operando incompatíveis", pos);
+                    }
+                }
+                break;
+            case 137:
+                if (isIncompatible(tipoExpressaoSimples, tipoTermo)) {
+                    throw new SemanticError("Operandos incompatíveis", pos);
+                } else {
+                    if (isNumber(tipoTermo) && isNumber(tipoExpressaoSimples)) {
+                        if ((tipoTermo + tipoExpressaoSimples).contains("real")) {
+                            tipoExpressaoSimples = "real";
+                        } else {
+                            tipoExpressaoSimples = "inteiro";
+                        }
+                    } else if ("cadeiacaracter".equals(tipoTermo) || "cadeiacaracter".equals(tipoExpressaoSimples)) {
+                        tipoExpressaoSimples = "cadeia";
+                    }
+                }
+                break;
+            case 128:
+                tipoExpressao = tipoExpressaoSimples;
+                break;
+            case 130:
+                operadorAtual = "=";
+                break;
+            case 131:
+                operadorAtual = "<";
+                break;
+            case 132:
+                operadorAtual = ">";
+                break;
+            case 133:
+                operadorAtual = ">=";
+                break;
+            case 134:
+                operadorAtual = "<=";
+                break;
+            case 999:
+                operadorAtual = "<>";
+                break;
+            case 129:
+                if (isIncompatible(tipoExpressaoSimples, tipoExpressao)) {
+                    throw new SemanticError("Operandos incompatíveis", pos);
+                } else {
+                    tipoExpressao = "boleano";
+                }
+                break;
+            case 120:
+                if (isIncompatible(tipoExpressao, tipoLadoEsquerdo)) {
                     throw new SemanticError("tipos incompatíveis", pos);
                 }
-                // gera codigo??
+                break;
+            case 122:
+                if (!tipoExpressao.equals("inteiro")) {
+                    throw new SemanticError("índice deveria ser inteiro", pos);
+                } else {
+                    if (tipoVarIndexada.equals("cadeia")) {
+                        tipoLadoEsquerdo = "caracter";
+                    } else {
+                        tipoLadoEsquerdo = tipoElementosDoVetor;
+                    }
+                }
+                break;
+            case 116:
+                if (!tipoExpressao.equals("inteiro") && !tipoExpressao.equals("boleano")) {
+                    throw new SemanticError("tipo inválido da expressão", pos);
+                } else {
+                    // TODO gera codigo?
+                }
+                break;
+            case 117:
+                contextoLid = "leitura";
+                break;
+            case 118:
+                contextoEXPR = "impressão";
+                if (tipoExpressao.equals("boleano")) {
+                    throw new SemanticError("tipo inválido para impressão");
+                } else {
+                    // TODO gera codigo?
+                }
+                break;
+            case 127:
+                if (contextoEXPR.equals("impressão")) {
+                    if (tipoExpressao.equals("boleano")) {
+                        throw new SemanticError("tipo inválido para impressão");
+                    } else {
+                        // TODO gera codigo?
+                    }
+                }
                 break;
         }
+    }
+
+    private boolean isIncompatible(String tipoExpressaoSimples, String tipoExpressao) {
+        if ((isNumber(tipoTermo) && !isNumber(tipoExpressaoSimples)) || (isNumber(tipoExpressaoSimples) && !isNumber(tipoTermo))) {
+            return true;
+        } else if (("boleano".equals(tipoTermo) && !"boleano".equals(tipoExpressaoSimples)) || (!"boleano".equals(tipoTermo) && "boleano".equals(tipoExpressaoSimples))) {
+            return true;
+        } else if (("cadeiacaracter".equals(tipoTermo) && !"cadeiacaracter".equals(tipoExpressaoSimples)) || (!"cadeiacaracter".equals(tipoTermo) && "cadeiacaracter".equals(tipoExpressaoSimples))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isNumber(String type) {
+        return "inteiroreal".contains(type);
     }
 
     private boolean isTipoAtualValid() {
