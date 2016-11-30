@@ -1,0 +1,10 @@
+programa exemploRuimTres;
+
+inteiro num1 = 3;
+inteiro num2 = verdadeiro;
+
+{
+    inteiro input := 5;
+    inteiro soma := num1 + num2;
+    se input > soma entao escreva(verdadeiro) senao escreva(falso);
+}.

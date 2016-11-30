@@ -1,0 +1,14 @@
+programa exemploBomUm;
+
+inteiro divisor = 3;
+inteiro valor;
+
+{
+    valor := 20;
+    enquanto valor >= 0 faca
+        valor := valor - divisor;
+    se valor > 0 entao
+        escreva(verdadeiro)
+    senao
+        escreva(falso);
+}.

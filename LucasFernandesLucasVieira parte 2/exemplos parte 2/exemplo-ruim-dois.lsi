@@ -1,0 +1,12 @@
+programa exemploRuimDois;
+
+inteiro num1;
+
+{
+    num1 := 3;
+    num1 := 5;
+    num2 := 3;
+    num2 := 5;
+    escreva(num1);
+    escreva(num2);
+}.

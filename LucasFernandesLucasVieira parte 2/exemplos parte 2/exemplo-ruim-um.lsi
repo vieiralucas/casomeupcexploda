@@ -1,0 +1,8 @@
+programa exemploRuimUm;
+
+real tamanho = 1.2;
+cadeia [tamanho] minhaCadeia;
+
+{
+    escreva(minhaCadeia);
+}.

@@ -1,0 +1,14 @@
+decl @a : real;
+decl @be : real;
+
+inicio
+    proc meuProcedimentoLegal;
+        inicio
+            escreva(verdadeiro);
+        fim;
+
+    @be = 20;
+    @a = 1;
+
+    enquanto @a < @b entao escreva(@a);
+fim.
